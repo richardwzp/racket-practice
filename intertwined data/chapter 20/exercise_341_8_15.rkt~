@@ -1,0 +1,13 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname exercise_341_8_15) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require htdp/dir)
+(define O (create-dir "/Users/wzp/Desktop/html/"))
+
+; directory -> Number
+; compute the size of all files
+(check-expect (du O) 783001)
+(define (du d)
+(+ (foldr (lambda (x base) (+ base (file-size x))) 0 (dir-files d))
+        (foldr (lambda (x base) (+ (du x) base)) (length (dir-dirs d)) (dir-dirs d)))
+     )

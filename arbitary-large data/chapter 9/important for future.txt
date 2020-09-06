@@ -1,0 +1,4 @@
+Some early exercises used the wrong data definition.
+those formats are not suppose to happen until later
+just a headsup
+

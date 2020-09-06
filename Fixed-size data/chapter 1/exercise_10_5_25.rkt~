@@ -1,0 +1,13 @@
+#lang racket
+(require 2htdp/image)
+(define in "first")
+
+(define (str_len str) (string-length str))
+(define (img_area img) (* (img) ))
+
+(cond
+  [(string? in) (string-length in)]
+
+
+
+ )

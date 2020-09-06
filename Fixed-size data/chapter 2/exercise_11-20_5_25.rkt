@@ -1,0 +1,71 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname exercise_11-20_5_25) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+;#lang racket
+(require 2htdp/image)
+;exercise 11
+(define (exercise_11 x y)
+(sqrt (+ (sqr x) (sqr y)))
+ )
+
+;exercise 12
+(define (cvolume side)
+  (* side side side)
+ )
+(define (csurface side)
+  (* 6 (sqr side))
+ )
+
+;exercise 13
+(define (string-first str)
+  (substring str 0 1)
+ )
+;exercise 14
+(define (string-last str)
+  (substring str (- (string-length str) 1) (string-length str))
+ )
+
+;exercise 15
+(define (==> sunny friday)
+  (if (or sunny friday) #true #false)
+ )
+
+;exercise 16
+(define (image-area image)
+  (* (image-width image) (image-height image))
+  )
+
+;exercise 17
+(define (image-classify image)
+  (if
+   (= (image-height image) (image-width image))
+   "square"
+   (if
+    (> (image-height image) (image-width image))
+    "tall"
+    "wide"
+    )
+   )
+  )
+
+;exercise 18
+(define (string-join str_1 str_2)
+  (string-append str_1 "_" str_2)
+  )
+
+;exercise 19
+(define (string-insert str i)
+  (string-append
+   (substring str 0 i)
+   "_"
+   (substring str i (string-length str))
+   )
+  )
+
+;exercise 20
+(define (string-delete str i)
+  (string-append
+   (substring str 0 i)
+   (substring str (+ i 1) (string-length str))
+   )
+  )

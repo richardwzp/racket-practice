@@ -1,0 +1,61 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname exercise_175_6_27) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require 2htdp/batch-io)
+; a wc is a structure of:
+; - number-of-words
+; - number-of-lines
+; - number-of-characters
+; (make-wc word line chr)
+(define-struct wc [word line chr])
+
+; helper function
+; List/String -> Number
+(check-expect (is-con? 2) (cons 2 '()))
+(check-expect (is-con? (cons 3 '())) (cons 3 '()))
+(define (is-cons? in)
+  (if (cons? in) in (cons in '())))
+; List-of-list-of-string -> List-of-String
+(check-expect (convert-list (cons 2 (cons (cons 3 (cons 5 '())) (cons 2 '())))) (cons 2 (cons 3 (cons 5 (cons 2 '())))))
+(define (convert-list llstr)
+  (cond
+    [(empty? llstr) '()]
+    [(cons? llstr)
+     (append (is-con? (first llstr)) (convert-list (rest llstr)))]
+    ))
+
+; List-of-list-of-String -> Number
+(check-expect (count-word (read-words/line "poem.txt")) 31)
+(define (count-word llstr)
+  (length (convert-list llstr)))
+; List-of-List-of-String -> Number
+(check-expect (count-line (read-words/line "poem.txt")) 33)
+(define (count-line llstr)
+  (length llstr))
+; List -> Number
+; count the chr in a list of words
+(check-expect (count-chr (convert-chr-list (read-words/line "poem.txt"))) 232)
+(define (count-chr-list l)
+  (cond
+    [(empty?) 0]
+    [else
+     (+ (string-length (first l)) (count-chr-list (rest l)))]
+    ))
+; List-of-List-of-String -> Number
+(check-expect (count-chr (read-words/line "poem.txt")) 232)
+(define (count-chr llstr)
+  (count-chr-list (convert-list llstr)))
+
+; List-of-list-of-String -> wc
+(check-expect (count (read-words/line "poem.txt")) (make-wc 31 33 232))
+(define (count llstr)
+  (make-wc
+   (count-word llstr)
+   (count-line llstr)
+   (count-chr llstr)
+   ))
+
+; filename -> wc
+(check-expect (word-count "poem.txt") (make-wc 31 33 232))
+(define (word-count name)
+  (count (read-words/line name)))

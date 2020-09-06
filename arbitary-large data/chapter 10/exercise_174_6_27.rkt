@@ -1,0 +1,62 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname exercise_174_6_27) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require 2htdp/batch-io)
+; 1String -> String
+; converts the given 1String into a String
+ 
+(check-expect (code1 "z") "122")
+  
+(define (code1 c)
+  (number->string (string->int c)))
+; 1String -> String
+; converts the given 1String to a 3-letter numeric String
+ 
+(check-expect (encode-letter "z") (code1 "z"))
+(check-expect (encode-letter "\t")
+              (string-append "00" (code1 "\t")))
+(check-expect (encode-letter "a")
+              (string-append "0" (code1 "a")))
+(define (encode-letter s)
+  (cond
+    [(>= (string->int s) 100) (code1 s)]
+    [(< (string->int s) 10)
+     (string-append "00" (code1 s))]
+    [(< (string->int s) 100)
+     (string-append "0" (code1 s))]))
+
+; List-of-String -> String
+; convert the word to text numerically
+(define (convert-word str)
+  (cond
+    [(string=? str "") ""]
+    [else
+     (string-append (encode-letter (string-ith str 0)) (convert-word (substring str 1 (string-length str))))]
+    ))
+; List-of-String -> String
+; convert the list to text numerically
+(define (convert-list lstr)
+  (cond
+    [(empty? lstr) ""]
+    [(cons? lstr)
+     (string-append (convert-word (first lstr))
+                    (if (empty? (rest lstr)) "" " ")
+                    (convert-list (rest lstr)))]
+    ))
+; List-of-list-of-String -> String
+; convert the input into a long string that
+; represent the text numerically
+; (line by line conversion)
+(define (convert llstr)
+  (cond
+    [(empty? llstr) ""]
+    [(cons? llstr)
+     (string-append
+      (convert-list (first llstr))
+      (if (empty? (rest llstr)) "" "\n")
+      (convert (rest llstr)))]
+    ))
+; filename -> List-of-String
+; convert the file to represent text numerically
+(define (text-num name)
+  (write-file (string-append "copy_of_" name) (convert (read-words/line name))))

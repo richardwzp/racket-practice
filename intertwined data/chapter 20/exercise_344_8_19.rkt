@@ -1,0 +1,52 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname exercise_344_8_19) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require htdp/dir)
+(define O (create-dir "/Users/wzp/Desktop/html"))
+
+; String -> String
+; get directory name
+(check-expect (get-dir-name "123/143/264/true") "true")
+(define (get-dir-name dn)
+  (cond
+    [(string=? (string-ith dn (- (string-length dn) 1)) "/") ""]
+    [else (string-append (get-dir-name (substring dn 0 (- (string-length dn) 1))) (string-ith dn (- (string-length dn) 1)))]))
+
+; String [list-of String] -> [list-of String]
+; append string to front of every element of the list
+(check-expect (string-add-list "1" `((1) (2) (3))) `(("1" 1) ("1" 2) ("1" 3)))
+(define (string-add-list str li)
+  (map (lambda (x) (append `(,str) x)) li))
+; directory -> [list-of String]
+(check-expect (ls-R O) (list
+ (list "html" "resource.html")
+ (list "html" "learn.html")
+ (list "html" "index.html")
+ (list "html" "contact.html")
+ (list "html" "about.html")
+ (list "html" ".DS_Store")
+ (list "html" "learning" "index2.html")
+ (list "html" "learning" "index.html")
+ (list "html" "learning" "css" "style.css")
+ (list "html" "img" "the warbler org.png")
+ (list "html" "img" "lonely bird.jpg")
+ (list "html" "img" "bird.png")
+ (list "html" "img" "Component 1.png")
+ (list "html" "css" "style.css")
+ (list "html" "css" "index.css")
+ (list "html" ".vscode" "settings.json")))
+(define (ls-R d)
+  (append (foldr (lambda (x base) (append base `((,(get-dir-name (symbol->string (dir-name d))) ,(file-name x))))) '() (dir-files d))
+          (foldr (lambda (x base) (append base (string-add-list (get-dir-name (symbol->string (dir-name d))) (ls-R x)))) '() (dir-dirs d))
+          ))
+; [list-of X] -> X
+; extract the last element
+(check-expect (last `(1 2 3)) 3)
+(define (last li)
+  (cond
+    [(empty? (rest li)) (first li)]
+    [else (last (rest li))]))
+; directory filename -> path/#f
+(check-expect (find O "bird.png") (list (list "html" "img" "bird.png")))
+(define (find d fn)
+  (filter (lambda (x) (string=? (last x) fn)) (ls-R d)))
