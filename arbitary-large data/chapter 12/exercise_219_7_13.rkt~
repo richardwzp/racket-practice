@@ -1,6 +1,6 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname exercise_219_7_13) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname exercise_219_7_13) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 (require 2htdp/image)
 (require 2htdp/universe)
 
@@ -169,38 +169,16 @@
     [(and (string=? (location-dir (first ws)) "down") (string=? keystroke "up")) #t]
     [else #f]
     ))
-; list-of-worm String -> Boolean
-; given list-of-worm and a direction,
-; determine if the worm is going to run into itself when the direction is changed
-(check-expect (into-itself? `(,(make-location 20 30 "up") ,(make-location 28 30 "left")) "right") #t)
-(check-expect (into-itself? `(,(make-location 20 30 "up") ,(make-location 12 30 "left")) "right") #f)
-(define (into-itself? worm dir)
-  (local
-    (; the moved worm body
-     (define MOVED-WORM
-       (if (>= (length worm) 2) (move-worm (make-location (location-x (first worm)) (location-y (first worm)) dir) dir)
-           #f))
-     ; turn worm body into posn
-      ; if length is less than 2, return #t
-     (define (worm-posn worm) (make-posn (location-x worm) (location-y worm))))
-    (cond
-     [(boolean? MOVED-WORM) #f]
-    [(equal? (worm-posn MOVED-WORM) (worm-posn (second worm))) #t]
-    [else #f])))
 
 ; list-of-worms String -> list-of-worms
 (check-expect (worm-key (list (make-location 50 50 "right")) "left") (list (make-location 50 50 "right")))
 (check-expect (worm-key (list (make-location 50 50 "right")) "down") (list (make-location 50 50 "down")))
 (define (worm-key ws keystroke)
-  (if (and (same-axis? ws keystroke) (or (string=? keystroke "right") (string=? keystroke "left") (string=? keystroke "up") (string=? keystroke "down"))
-           (member? keystroke `("left" "right" "up" "down"))  
-           ) 
+  (if (and (same-axis? ws keystroke) (or (string=? keystroke "right") (string=? keystroke "left") (string=? keystroke "up") (string=? keystroke "down"))) 
       ws
-      ; patch: return the same thing if the warm is going into itself
-      (if (into-itself? ws keystroke) ws (cons (make-location (location-x (first ws)) (location-y (first ws)) keystroke) (rest ws)))
-      ))
+      (cons (make-location (location-x (first ws)) (location-y (first ws)) keystroke) (rest ws))))
 
- 
+
 
 ; food creation
 ; food -> food 
